@@ -22,7 +22,6 @@ function playMusic() {
         audio.play();
         audio.classList.add('playing');
 
-        // if (audio.ended)  playNext();
 
     } else {
         audio.pause();
@@ -85,9 +84,26 @@ const weather = document.getElementById('weather');
 const windSpeed = document.getElementById('speed');
 const humidity = document.getElementById('humidity');
 
+let o;
+function getHour() {
+    const ate = new Date();
+    if (ate.getHours() >= 23) {
+        o = 'night';
+    }
+    if (ate.getHours() >= 6) {
+        o = 'morning';
+    }
+    if (ate.getHours() >= 12) {
+        o = 'afternoon';
+    }
+    if (ate.getHours() >= 18) {
+        o = 'evening';
+    }
+}
+
 function getWeatherByCity(cityn) {
     fetch(`https://api.openweathermap.org/data/2.5/weather?q=${cityn}&lang=en&appid=19bc74efbd0e229bf500a5e1349e242b&units=metric`)
-        .then((Response) => Response.json())
+        .then((response) => response.json())
         .then((data) => {
             weatherImg.classList = (`owf owf-${data.weather[0].id}-d`);
             weatherImg.style.fontSize = '44px';
@@ -100,8 +116,6 @@ function getWeatherByCity(cityn) {
         })
 }
 
-
-
 const city = document.getElementById('city').addEventListener('change', (e) => {
     getWeatherByCity(e.currentTarget.value);
 });
@@ -109,58 +123,29 @@ const city = document.getElementById('city').addEventListener('change', (e) => {
 getWeatherByCity('Minsk');
 
 
-let days = [
-    'Sunday',
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday ',
-    'Friday',
-    'Saturday'
-];
-
 const good = document.getElementById('good');
 
 let t = document.getElementById('time');
 
 const back = document.querySelector('.back');
 function showTime() {
+    getHour();
     const ate = new Date();
     const currentTime = ate.toLocaleTimeString();
     t.textContent = currentTime;
     if (ate.getHours() >= 23) {
         showDate();
-        good.textContent = 'Good night ';
     }
-    if (ate.getHours() >= 6) {
-        good.textContent = 'Good morning ';
-    }
-    if (ate.getHours() >= 12) {
-        good.textContent = 'Good afternoon ';
-    }
-    if (ate.getHours() >= 18) {
-        good.textContent = 'Good evening ';
-    }
+    good.textContent = 'Good ' + o;
     setTimeout(showTime, 1000);
 }
 showTime();
 
 
 window.addEventListener('load', () => {
-    const ate = new Date();
+    getHour();
+        back.style.backgroundImage = "url('stls/bgs/" + o + ".jpg')";
 
-    if (ate.getHours() >= 23) {
-        back.style.backgroundImage = "url('stls/bgs/night.jpg')";
-    }
-    if (ate.getHours() >= 6) {
-        back.style.backgroundImage = "url('stls/bgs/morning.jpg')";
-    }
-    if (ate.getHours() >= 12) {
-        back.style.backgroundImage = "url('stls/bgs/afternoon.jpg')";
-    }
-    if (ate.getHours() >= 18) {
-        back.style.backgroundImage = "url('stls/bgs/evening.jpg')";
-    }
 })
 
 
@@ -169,9 +154,8 @@ function showDate() {
     const date = new Date();
     const options = { month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', timeZone: 'UTC' };
     const currentDate = date.toLocaleDateString('en-US', options);
-    let n = date.getDay();
     let cDate = document.getElementById('date');
-    cDate.textContent = days[n] + ', ' + currentDate.replace('.', '').slice(0, 7);
+    cDate.textContent = options.weekDay + ', ' + currentDate.replace('.', '').slice(0, 7);
 
 }
 
@@ -223,23 +207,23 @@ next.addEventListener('click', () => {
     for (let i = 0; i < bgsList.length; i++) {
         if (back.style.backgroundImage == bgsList[i]) {
             c = i;
-        } 
-    }
-        if (c < 3) {
-            back.style.backgroundImage = bgsList[c + 1];
         }
-        if (c == 3) back.style.backgroundImage = bgsList[0];    
+    }
+    if (c < 3) {
+        back.style.backgroundImage = bgsList[c + 1];
+    }
+    if (c == 3) back.style.backgroundImage = bgsList[0];
 })
 
-  prev.addEventListener('click', () => {
+prev.addEventListener('click', () => {
     let c;
     for (let i = 0; i < bgsList.length; i++) {
         if (back.style.backgroundImage == bgsList[i]) {
             c = i;
-        } 
-    }
-        if (c <= 3) {
-            back.style.backgroundImage = bgsList[c - 1];
         }
-        if (c == 0) back.style.backgroundImage = bgsList[3];    
+    }
+    if (c <= 3) {
+        back.style.backgroundImage = bgsList[c - 1];
+    }
+    if (c == 0) back.style.backgroundImage = bgsList[3];
 })
