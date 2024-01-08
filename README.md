@@ -1,2 +1,2 @@
 # momentum
-https://nanudoldirmgjj.github.io/momentum/
+https://wolamey.github.io/momentum/
